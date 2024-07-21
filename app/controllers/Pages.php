@@ -9,7 +9,7 @@
         'title' => 'SharePosts',
         'description' => 'Simple social network built on the sharepost PHP framework'
       ];
-     
+
       $this->view('pages/index', $data);
     }
 

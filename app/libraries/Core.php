@@ -1,58 +1,67 @@
 <?php
-  /*
-   * App Core Class
-   * Creates URL & loads core controller
-   * URL FORMAT - /controller/method/params
-   */
-  class Core {
+
+/*
+ * App Core Class
+ * Creates URL & loads core controller
+ * URL FORMAT - /controller/method/params
+ */
+
+class Core
+{
     protected $currentController = 'Pages';
     protected $currentMethod = 'index';
     protected $params = [];
 
-    public function __construct(){
-      //print_r($this->getUrl());
+    public function __construct()
+    {
+        //print_r($this->getUrl());
 
-      $url = $this->getUrl() ?? [];
-      var_dump($url);
-die();
-      // Look in controllers for first value
-      if(isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]). '.php')){
-        // If exists, set as controller
-        $this->currentController = ucwords($url[0]);
-        // Unset 0 Index
-        unset($url[0]);
-      }
+        $url = $this->getUrl() ?? [];
 
-      // Require the controller
-      require_once '../app/controllers/'. $this->currentController . '.php';
+//     var_dump($url);
+//     die();
+        // Look in controllers for first value
+        if (isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) { // pages/about
+            // If exists, set as controller
+            $this->currentController = ucwords($url[0]);
+            // Unset 0 Index
+            unset($url[0]);
 
-      // Instantiate controller class
-      $this->currentController = new $this->currentController;
-
-      // Check for second part of url
-      if(isset($url[1])){
-        // Check to see if method exists in controller
-        if(method_exists($this->currentController, $url[1])){
-          $this->currentMethod = $url[1];
-          // Unset 1 index
-          unset($url[1]);
         }
-      }
 
-      // Get params
-      $this->params = $url ? array_values($url) : [];
-      // Call a callback with array of params
-      call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+        // Require the controller
+        require_once '../app/controllers/' . $this->currentController . '.php';
+
+        // Instantiate controller class
+        $this->currentController = new $this->currentController;
+
+        // Check for second part of url
+        if (isset($url[1])) {
+            // Check to see if method exists in controller
+            if (method_exists($this->currentController, $url[1])) {
+                $this->currentMethod = $url[1];
+                // Unset 1 index
+                unset($url[1]);
+            }
+        }
+
+        // Get params
+        $this->params = $url ? array_values($url) : [];
+        // Call a callback with array of params
+        call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
     }
 
-    public function getUrl(){
-      if(isset($_SERVER['REQUEST_URI'])){
-        $url = rtrim($_SERVER['REQUEST_URI'], '/');
-        $url = filter_var($url, FILTER_SANITIZE_URL);
-        $url = explode('/', $url);
+    public function getUrl(): array
+    {
+        $url = [];
+
+        if (isset($_SERVER['REQUEST_URI'])) { // Retrieves the URL from $_SERVER['REQUEST_URI
+            $url = rtrim($_SERVER['REQUEST_URI'], '/'); // removes any trailing slashes from the URL stored in $_SERVER['REQUEST_URI']
+            $url = str_replace('/php/sharepost/','',filter_var($url, FILTER_SANITIZE_URL));
+            $url = explode('/', $url); //splits a string ($url) into an array of substrings, using '/' as the delimiter.
+        }
         return $url;
-      }
     }
-  }
+}
 
   
