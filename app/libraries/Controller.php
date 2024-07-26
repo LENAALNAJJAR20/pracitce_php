@@ -5,7 +5,7 @@
    */
   class Controller {
     // Load model
-    public function model($model){
+    public function model($model){ // $model = User
       // Require model file
       require_once '../app/models/' . $model . '.php';
 
@@ -14,6 +14,7 @@
     }
 
     // Load view
+      // this function to check if view exist or not
     public function view($view, $data = []){
       // Check for view file
 

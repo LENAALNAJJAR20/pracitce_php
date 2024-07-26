@@ -39,6 +39,7 @@
     }
 
     // Bind values
+      // to conect data
     public function bind($param, $value, $type = null){
       if(is_null($type)){
         switch(true){
@@ -59,7 +60,7 @@
       $this->stmt->bindValue($param, $value, $type);
     }
 
-    // Execute the prepared statement
+    // Execute the prepared statement (select or insert or delete)
     public function execute(){
       return $this->stmt->execute();
     }
